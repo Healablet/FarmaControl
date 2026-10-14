@@ -8,6 +8,10 @@ Este primer incremento contiene el esqueleto Spring Boot, una comprobación de s
 
 **Fuera del alcance:** facturación electrónica e integración con la DIAN, e-commerce/pasarela de pagos y pedidos automáticos por API a proveedores.
 
+## Alertas de vencimiento
+
+`GET /api/lotes/proximos-vencer` consulta los lotes que vencen desde hoy hasta los próximos 30 días, ambos límites incluidos. Los resultados se ordenan por fecha de vencimiento (FEFO); los lotes ya vencidos no se incluyen.
+
 ## Requisitos
 
 - Java 25 (LTS)

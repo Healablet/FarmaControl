@@ -1,6 +1,7 @@
 package co.farmacontrol.lotes;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import co.farmacontrol.medicamentos.Medicamento;
@@ -19,6 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api")
 public class LoteController {
+
+    private static final long DIAS_ALERTA_VENCIMIENTO = 30;
 
     private final LoteRepository loteRepository;
     private final MedicamentoRepository medicamentoRepository;
@@ -41,6 +44,16 @@ public class LoteController {
     @GetMapping("/medicamentos/{medicamentoId}/lotes/fefo")
     public List<LoteResponse> listLotsByFefo(@PathVariable Long medicamentoId) {
         return loteRepository.findByMedicamentoIdOrderByFechaVencimientoAsc(medicamentoId)
+                .stream()
+                .map(LoteResponse::fromEntity)
+                .toList();
+    }
+
+    @GetMapping("/lotes/proximos-vencer")
+    public List<LoteResponse> listLotsExpiringSoon() {
+        LocalDate today = LocalDate.now();
+        return loteRepository.findByFechaVencimientoBetweenOrderByFechaVencimientoAscIdAsc(
+                        today, today.plusDays(DIAS_ALERTA_VENCIMIENTO))
                 .stream()
                 .map(LoteResponse::fromEntity)
                 .toList();

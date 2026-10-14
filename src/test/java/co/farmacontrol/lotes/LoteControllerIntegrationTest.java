@@ -130,4 +130,28 @@ class LoteControllerIntegrationTest {
                                 """))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldListLotsExpiringWithinThirtyDaysInFefoOrder() throws Exception {
+        Medicamento medicamento = medicamentoRepository.save(
+                new Medicamento("Acetaminofen", "Paracetamol", "500 mg", "Tabletas", 20)
+        );
+        LocalDate today = LocalDate.now();
+        LocalDate fechaFabricacion = today.minusDays(90);
+
+        loteRepository.save(new Lote("LOT-VENCIDO", 10, fechaFabricacion,
+                today.minusDays(1), medicamento));
+        loteRepository.save(new Lote("LOT-EN-7-DIAS", 15, fechaFabricacion,
+                today.plusDays(7), medicamento));
+        loteRepository.save(new Lote("LOT-EN-30-DIAS", 25, fechaFabricacion,
+                today.plusDays(30), medicamento));
+        loteRepository.save(new Lote("LOT-EN-31-DIAS", 30, fechaFabricacion,
+                today.plusDays(31), medicamento));
+
+        mockMvc.perform(get("/api/lotes/proximos-vencer"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].numeroLote").value("LOT-EN-7-DIAS"))
+                .andExpect(jsonPath("$[1].numeroLote").value("LOT-EN-30-DIAS"));
+    }
 }
