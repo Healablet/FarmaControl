@@ -10,7 +10,7 @@ Este primer incremento contiene el esqueleto Spring Boot, una comprobación de s
 
 ## Requisitos
 
-- Java 21
+- Java 25 (LTS)
 - Maven 3.9 o superior
 - Docker Desktop (para iniciar PostgreSQL localmente)
 
@@ -40,4 +40,4 @@ Ejemplos de commits pequeños: `chore: crear base Spring Boot`, `feat: agregar e
 
 ## Tecnologías
 
-Java 21, Spring Boot, Spring Web, Spring Data JPA, Bean Validation, Flyway y PostgreSQL.
+Java 25 (LTS), Spring Boot, Spring Web, Spring Data JPA, Bean Validation, Flyway y PostgreSQL.
