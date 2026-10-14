@@ -114,4 +114,20 @@ class LoteControllerIntegrationTest {
                                 """))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldRejectLotWhenManufacturingDateIsAfterExpirationDate() throws Exception {
+        mockMvc.perform(post("/api/lotes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "medicamentoId": 1,
+                                  "numeroLote": "LOT-FECHAS-INVALIDAS",
+                                  "cantidad": 10,
+                                  "fechaFabricacion": "2026-12-11",
+                                  "fechaVencimiento": "2026-12-10"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
 }

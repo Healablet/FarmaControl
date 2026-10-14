@@ -3,6 +3,7 @@ package co.farmacontrol.lotes;
 import java.time.LocalDate;
 
 import co.farmacontrol.medicamentos.Medicamento;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,6 +25,12 @@ public record LoteRequest(
         @NotNull(message = "La fecha de vencimiento es obligatoria")
         LocalDate fechaVencimiento
 ) {
+    @AssertTrue(message = "La fecha de fabricación no puede ser posterior a la fecha de vencimiento")
+    public boolean isFechaFabricacionValida() {
+        return fechaFabricacion == null || fechaVencimiento == null
+                || !fechaFabricacion.isAfter(fechaVencimiento);
+    }
+
     public Lote toEntity(Medicamento medicamento) {
         return new Lote(numeroLote, cantidad, fechaFabricacion, fechaVencimiento, medicamento);
     }
