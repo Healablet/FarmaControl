@@ -57,9 +57,9 @@ class LoteControllerIntegrationTest {
                                 }
                                 """.formatted(medicamento.getId())))
                 .andExpect(status().isCreated())
-                                .andExpect(jsonPath("$.medicamentoId").value(medicamento.getId()))
-                                .andExpect(jsonPath("$.nombreMedicamento").value("Ibuprofeno"))
-                                .andExpect(jsonPath("$.numeroLote").value("LOT-2026-02"));
+                .andExpect(jsonPath("$.medicamentoId").value(medicamento.getId()))
+                .andExpect(jsonPath("$.nombreMedicamento").value("Ibuprofeno"))
+                .andExpect(jsonPath("$.numeroLote").value("LOT-2026-02"));
 
         mockMvc.perform(post("/api/lotes")
                         .contentType(MediaType.APPLICATION_JSON)
