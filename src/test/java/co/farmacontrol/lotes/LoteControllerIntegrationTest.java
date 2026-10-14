@@ -57,7 +57,9 @@ class LoteControllerIntegrationTest {
                                 }
                                 """.formatted(medicamento.getId())))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.numeroLote").value("LOT-2026-02"));
+                                .andExpect(jsonPath("$.medicamentoId").value(medicamento.getId()))
+                                .andExpect(jsonPath("$.nombreMedicamento").value("Ibuprofeno"))
+                                .andExpect(jsonPath("$.numeroLote").value("LOT-2026-02"));
 
         mockMvc.perform(post("/api/lotes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -80,5 +82,36 @@ class LoteControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].numeroLote").value("LOT-2026-01"))
                 .andExpect(jsonPath("$[1].numeroLote").value("LOT-2026-02"));
+    }
+
+    @Test
+    void shouldRejectLotWhenMedicamentoDoesNotExist() throws Exception {
+        mockMvc.perform(post("/api/lotes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "medicamentoId": 9223372036854775807,
+                                  "numeroLote": "LOT-INVALIDO",
+                                  "cantidad": 10,
+                                  "fechaFabricacion": "2026-01-15",
+                                  "fechaVencimiento": "2026-12-10"
+                                }
+                                """))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldRejectLotWithoutMedicamentoId() throws Exception {
+        mockMvc.perform(post("/api/lotes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "numeroLote": "LOT-SIN-MEDICAMENTO",
+                                  "cantidad": 10,
+                                  "fechaFabricacion": "2026-01-15",
+                                  "fechaVencimiento": "2026-12-10"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
     }
 }
